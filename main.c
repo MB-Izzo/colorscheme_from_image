@@ -11,12 +11,11 @@ typedef struct {
 
 color NewColor(double *h, double *s, double *b);
 color ColorToSimplified(color col);
-void ConvertAllColor(color arr[], int arr_size, color new_arr[]);
-void PrintAll(color arr[], int arr_size);
+void ConvertAllColor(color arr[], int arr_size, color output_arr[]);
+// Could find a way to not have these duplicates...
 int GetPopularH(color arr[], int arr_size);
 int GetPopularS(color arr[], int arr_size);
 int GetPopularB(color arr[], int arr_size);
-
 
 int main()
 {
@@ -49,6 +48,7 @@ int main()
 
     pi = NewPixelIterator(mw);
 
+    // read the iamge pixel by pixel.
     for(y = 0; y < height; y++) {
         pw = PixelGetNextIteratorRow(pi, &width);
         for(x = 0; x < (long) width; x++) {
@@ -78,36 +78,30 @@ int main()
     return 0;
 }
 
+// Clean the floating numbers.
 color NewColor(double *h, double *s, double *b)
 {
     color col = {*h*100, *s*100, *b*100};
     return col;
 }
 
+// To categorize colors.
 color ColorToSimplified(color col)
 {
     color c = {col.h / 16, col.s / 10, col.b / 10};
     return c;
 }
 
-void ConvertAllColor(color arr[], int arr_size, color arr_to_populate[]) 
+void ConvertAllColor(color arr[], int arr_size, color output_arr[]) 
 {
     int i;
     for (i = 0; i < arr_size; i++)
     {
-        arr_to_populate[i] = ColorToSimplified(arr[i]);
+        output_arr[i] = ColorToSimplified(arr[i]);
     }
 }
 
-void PrintAll(color arr[], int arr_size)
-{
-    int i;
-    for (i = 0; i < arr_size; i++)
-    {
-        printf("H: %d, S: %d, B: %d\n", arr[i].h, arr[i].s, arr[i].b);
-    }
-}
-
+// Get popular Hue.
 int GetPopularH(color arr[], int arr_size)
 {
     int count = 1, temp_count;
@@ -135,6 +129,7 @@ int GetPopularH(color arr[], int arr_size)
     return popular;
 }
 
+// Get popular Saturation.
 int GetPopularS(color arr[], int arr_size)
 {
     int count = 1, temp_count;
@@ -162,6 +157,7 @@ int GetPopularS(color arr[], int arr_size)
     return popular;
 }
 
+// Get popular Brightness.
 int GetPopularB(color arr[], int arr_size)
 {
     int count = 1, temp_count;
