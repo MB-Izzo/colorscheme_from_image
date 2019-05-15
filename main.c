@@ -35,7 +35,7 @@ int main()
     MagickWandGenesis();
     mw = NewMagickWand();
 
-    MagickReadImage(mw, "logo.jpg");
+    MagickReadImage(mw, "logored.jpg");
 
     width = MagickGetImageWidth(mw);
     height = MagickGetImageHeight(mw);
@@ -60,11 +60,14 @@ int main()
             idx++;
         }
     }
-   // ConvertAllColor(color_arr, ARR_SIZE, simple_colors);
-   
-    printf("Pop h: %d\n", GetPopularH(color_arr, ARR_SIZE));
-    printf("Pop s: %d\n", GetPopularS(color_arr, ARR_SIZE));
-    printf("Pop b: %d\n", GetPopularB(color_arr, ARR_SIZE));
+
+    ConvertAllColor(color_arr, ARR_SIZE, simple_colors);
+    int popular_h = GetPopularH(simple_colors, ARR_SIZE);
+    int popular_s = GetPopularS(simple_colors, ARR_SIZE);
+    int popular_b = GetPopularB(simple_colors, ARR_SIZE);
+
+    printf("The most popular color is: \n");
+    printf("H: %d\nS: %d\nB: %d\n", popular_h * 16, popular_s * 10, popular_b * 10);
 
 
     mw = DestroyMagickWand(mw);
