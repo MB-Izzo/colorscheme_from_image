@@ -1,11 +1,7 @@
 #include "color.h"
 #include <string.h>
 
-typedef struct {
-    int h;
-    int s;
-    int b;
-} color;
+struct color;
 
 // Clean the floating numbers.
 color new_color(double *h, double *s, double *b)

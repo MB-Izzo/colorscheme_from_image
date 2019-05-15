@@ -1,8 +1,9 @@
-typedef struct {
+typedef struct col {
     int h;
     int s;
     int b;
-} color;
+} color ;
+
 
 color new_color(double *h, double *s, double *b);
 color simplify_color(color col);
