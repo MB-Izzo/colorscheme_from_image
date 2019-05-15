@@ -1,6 +1,7 @@
 // main.c
 // https://stackoverflow.com/a/4169105
 #include <stdio.h>
+#include <string.h>
 #include <wand/MagickWand.h>
 
 typedef struct {
@@ -13,9 +14,7 @@ color NewColor(double *h, double *s, double *b);
 color ColorToSimplified(color col);
 void ConvertAllColor(color arr[], int arr_size, color output_arr[]);
 // Could find a way to not have these duplicates...
-int GetPopularH(color arr[], int arr_size);
-int GetPopularS(color arr[], int arr_size);
-int GetPopularB(color arr[], int arr_size);
+color GetPopularColor(color arr[], int arr_size);
 
 int main()
 {
@@ -62,13 +61,9 @@ int main()
     }
 
     ConvertAllColor(color_arr, ARR_SIZE, simple_colors);
-    int popular_h = GetPopularH(simple_colors, ARR_SIZE);
-    int popular_s = GetPopularS(simple_colors, ARR_SIZE);
-    int popular_b = GetPopularB(simple_colors, ARR_SIZE);
 
-    printf("The most popular color is: \n");
-    printf("H: %d\nS: %d\nB: %d\n", popular_h * 16, popular_s * 10, popular_b * 10);
-
+    color a = GetPopularColor(simple_colors, ARR_SIZE);
+    printf("h: %d, s: %d, b: %d\n", a.h * 16, a.s * 10 , a.b * 10);
 
     mw = DestroyMagickWand(mw);
     MagickWandTerminus();
@@ -101,86 +96,30 @@ void ConvertAllColor(color arr[], int arr_size, color output_arr[])
     }
 }
 
-// Get popular Hue.
-int GetPopularH(color arr[], int arr_size)
+color GetPopularColor(color arr[], int arr_size)
 {
     int count = 1, temp_count;
-    int popular = arr[0].h;
+    color popular_color = arr[0];
+    color temp_color;
     int temp = 0;
     int i = 0;
     int j = 0;
     for (i = 0; i < (arr_size-1); i++)
     {
-        temp = arr[i].h;
+        temp_color = arr[i];
         temp_count = 0;
         for(j = 0; j < arr_size; j++)
         {
-            if (temp == arr[j].h)
+            if (memcmp(&temp_color, &arr[j], sizeof(color)) == 0)
             {
                 temp_count++;
             }
         }
         if (temp_count > count)
         {
-            popular = temp;
+            popular_color = temp_color;
             count = temp_count;
         }
     }
-    return popular;
-}
-
-// Get popular Saturation.
-int GetPopularS(color arr[], int arr_size)
-{
-    int count = 1, temp_count;
-    int popular = arr[0].s;
-    int temp = 0;
-    int i = 0;
-    int j = 0;
-    for (i = 0; i < (arr_size-1); i++)
-    {
-        temp = arr[i].s;
-        temp_count = 0;
-        for(j = 0; j < arr_size; j++)
-        {
-            if (temp == arr[j].s)
-            {
-                temp_count++;
-            }
-        }
-        if (temp_count > count)
-        {
-            popular = temp;
-            count = temp_count;
-        }
-    }
-    return popular;
-}
-
-// Get popular Brightness.
-int GetPopularB(color arr[], int arr_size)
-{
-    int count = 1, temp_count;
-    int popular = arr[0].b;
-    int temp = 0;
-    int i = 0;
-    int j = 0;
-    for (i = 0; i < (arr_size-1); i++)
-    {
-        temp = arr[i].b;
-        temp_count = 0;
-        for(j = 0; j < arr_size; j++)
-        {
-            if (temp == arr[j].b)
-            {
-                temp_count++;
-            }
-        }
-        if (temp_count > count)
-        {
-            popular = temp;
-            count = temp_count;
-        }
-    }
-    return popular;
+    return popular_color;
 }
