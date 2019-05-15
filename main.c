@@ -1,16 +1,21 @@
 // main.c
-// -L/usr/include/ImageMagick-6
+// https://stackoverflow.com/a/4169105
 #include <stdio.h>
 #include <wand/MagickWand.h>
 
-
 typedef struct {
-    float h;
-    float s;
-    float b;
+    int h;
+    int s;
+    int b;
 } color;
 
 color NewColor(double *h, double *s, double *b);
+color ColorToSimplified(color col);
+void ConvertAllColor(color arr[], int arr_size, color new_arr[]);
+void PrintAll(color arr[], int arr_size);
+int GetPopularH(color arr[], int arr_size);
+int GetPopularS(color arr[], int arr_size);
+int GetPopularB(color arr[], int arr_size);
 
 
 int main()
@@ -40,6 +45,7 @@ int main()
     const int ARR_SIZE = (width * height);
 
     color color_arr[ARR_SIZE];
+    color simple_colors[ARR_SIZE];
 
     pi = NewPixelIterator(mw);
 
@@ -54,9 +60,13 @@ int main()
             idx++;
         }
     }
-    printf("Col: %f, %f, %f \n", color_arr[1].h, color_arr[1].s, color_arr[1].b);
-    
-    
+   // ConvertAllColor(color_arr, ARR_SIZE, simple_colors);
+   
+    printf("Pop h: %d\n", GetPopularH(color_arr, ARR_SIZE));
+    printf("Pop s: %d\n", GetPopularS(color_arr, ARR_SIZE));
+    printf("Pop b: %d\n", GetPopularB(color_arr, ARR_SIZE));
+
+
     mw = DestroyMagickWand(mw);
     MagickWandTerminus();
 
@@ -67,12 +77,111 @@ int main()
 
 color NewColor(double *h, double *s, double *b)
 {
-    *h = (float)*h;
-    *s = (float)*s;
-    *b = (float)*b;
-
-    color col = {*h, *s, *b};
-
+    color col = {*h*100, *s*100, *b*100};
     return col;
 }
 
+color ColorToSimplified(color col)
+{
+    color c = {col.h / 16, col.s / 10, col.b / 10};
+    return c;
+}
+
+void ConvertAllColor(color arr[], int arr_size, color arr_to_populate[]) 
+{
+    int i;
+    for (i = 0; i < arr_size; i++)
+    {
+        arr_to_populate[i] = ColorToSimplified(arr[i]);
+    }
+}
+
+void PrintAll(color arr[], int arr_size)
+{
+    int i;
+    for (i = 0; i < arr_size; i++)
+    {
+        printf("H: %d, S: %d, B: %d\n", arr[i].h, arr[i].s, arr[i].b);
+    }
+}
+
+int GetPopularH(color arr[], int arr_size)
+{
+    int count = 1, temp_count;
+    int popular = arr[0].h;
+    int temp = 0;
+    int i = 0;
+    int j = 0;
+    for (i = 0; i < (arr_size-1); i++)
+    {
+        temp = arr[i].h;
+        temp_count = 0;
+        for(j = 0; j < arr_size; j++)
+        {
+            if (temp == arr[j].h)
+            {
+                temp_count++;
+            }
+        }
+        if (temp_count > count)
+        {
+            popular = temp;
+            count = temp_count;
+        }
+    }
+    return popular;
+}
+
+int GetPopularS(color arr[], int arr_size)
+{
+    int count = 1, temp_count;
+    int popular = arr[0].s;
+    int temp = 0;
+    int i = 0;
+    int j = 0;
+    for (i = 0; i < (arr_size-1); i++)
+    {
+        temp = arr[i].s;
+        temp_count = 0;
+        for(j = 0; j < arr_size; j++)
+        {
+            if (temp == arr[j].s)
+            {
+                temp_count++;
+            }
+        }
+        if (temp_count > count)
+        {
+            popular = temp;
+            count = temp_count;
+        }
+    }
+    return popular;
+}
+
+int GetPopularB(color arr[], int arr_size)
+{
+    int count = 1, temp_count;
+    int popular = arr[0].b;
+    int temp = 0;
+    int i = 0;
+    int j = 0;
+    for (i = 0; i < (arr_size-1); i++)
+    {
+        temp = arr[i].b;
+        temp_count = 0;
+        for(j = 0; j < arr_size; j++)
+        {
+            if (temp == arr[j].b)
+            {
+                temp_count++;
+            }
+        }
+        if (temp_count > count)
+        {
+            popular = temp;
+            count = temp_count;
+        }
+    }
+    return popular;
+}
