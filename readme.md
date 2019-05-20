@@ -6,4 +6,6 @@ This is a small project I am doing to learn C.
 
 ## Build
 
-```gcc main.c color.c `pkg-config --cflags --libs MagickWand\````
+```
+gcc main.c color.c `pkg-config --cflags --libs MagickWand
+```
