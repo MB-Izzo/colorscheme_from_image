@@ -4,11 +4,48 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #include <wand/MagickWand.h>
 #include "color.h"
 
-int main()
+int main(int argc, char **argv)
 {
+
+    char *img_arg = NULL;
+    int c;
+
+    while ((c = getopt(argc, argv, "i:" )) != -1)
+    {
+        switch(c)
+        {
+            case 'i':
+                img_arg = optarg;
+                break;
+            case '?':
+                if (optopt == 'i')
+                    fprintf(stderr, "Option -%c requires an arg.\n", optopt);
+                else
+                    fprintf(stderr, "Unknown option character.\n");
+                return 1;
+        }
+    }
+
+    if (img_arg == NULL)
+    {
+        fprintf(stderr, "You need to specify an img with -i argument.\n");
+        return 1;
+    }
+
+    if (access(img_arg, F_OK) != -1)
+    {
+        printf("Opened: %s\n", img_arg);
+    }
+    else
+    {
+        printf("Can not open: %s\n", img_arg);
+        return 0;
+    }
+
     MagickWand *mw;
     PixelIterator *pi;
     PixelWand **pw;
@@ -30,7 +67,7 @@ int main()
     MagickWandGenesis();
     mw = NewMagickWand();
 
-    MagickReadImage(mw, "logored.jpg");
+    MagickReadImage(mw, img_arg);
 
     width = MagickGetImageWidth(mw);
     height = MagickGetImageHeight(mw);
@@ -39,7 +76,7 @@ int main()
     printf("Image Width: %lu\nImage Height: %lu\n", width, height);
     printf("Pixel number: %lu\n\n", width*height);
 
-    // Array containing pixels
+    // Array containing each pixels
     const int ARR_SIZE = (width * height);
 
     color color_arr[ARR_SIZE];
@@ -49,7 +86,7 @@ int main()
 
     int idx = 0;
 
-    // read the iamge pixel by pixel.
+    // read the image pixel by pixel.
     for(y = 0; y < height; y++) {
         pw = PixelGetNextIteratorRow(pi, &width);
         for(x = 0; x < (long) width; x++) {
@@ -64,10 +101,11 @@ int main()
 
     convert_all_colors(color_arr, ARR_SIZE, simple_colors);
 
-    color a = get_popular_color(simple_colors, ARR_SIZE);
+    color popular_color = get_popular_color(simple_colors, ARR_SIZE);
     printf("-------\n\n");
     printf("Popular color: \n");
-    printf("H: %d, S: %d, B: %d\n\n", a.h * 16, a.s * 10 , a.b * 10);
+    printf("H: %d, S: %d, B: %d\n\n", popular_color.h * 16, popular_color.s * 10,
+    popular_color.b * 10);
 
     mw = DestroyMagickWand(mw);
     MagickWandTerminus();
