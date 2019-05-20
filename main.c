@@ -4,8 +4,8 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "color.h"
 #include <wand/MagickWand.h>
+#include "color.h"
 
 int main()
 {

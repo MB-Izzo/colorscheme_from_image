@@ -1,8 +1,7 @@
-#include "color.h"
 #include <string.h>
+#include "color.h"
 
 struct color;
-
 // Clean the floating numbers.
 color new_color(double *h, double *s, double *b)
 {
