@@ -1,6 +1,6 @@
 // main.c
 // Implementing: https://stackoverflow.com/a/4169105
-// gcc main.c color.c `pkg-config --cflags --libs MagickWand`
+// gcc -g main.c color.c `pkg-config --cflags --libs MagickWand`
 
 #include <stdio.h>
 #include <string.h>
@@ -8,8 +8,9 @@
 #include <wand/MagickWand.h>
 #include "color.h"
 
-int main(int argc, char **argv)
+int main(int argc, char *argv[])
 {
+    printf("%lu\n", __SIZE_MAX__);
 
     char *img_arg = NULL;
     int c;
@@ -77,14 +78,14 @@ int main(int argc, char **argv)
     printf("Pixel number: %lu\n\n", width*height);
 
     // Array containing each pixels
-    const int ARR_SIZE = (width * height);
+    unsigned long ARR_SIZE = (width * height);
 
     color color_arr[ARR_SIZE];
     color simple_colors[ARR_SIZE];
 
     pi = NewPixelIterator(mw);
 
-    int idx = 0;
+    unsigned long idx = 0;
 
     // read the image pixel by pixel.
     for(y = 0; y < height; y++) {
@@ -97,6 +98,7 @@ int main(int argc, char **argv)
             color_arr[idx] = new_color(&h, &s, &b);
             idx++;
         }
+        PixelSyncIterator(pi);
     }
 
     convert_all_colors(color_arr, ARR_SIZE, simple_colors);
@@ -107,6 +109,7 @@ int main(int argc, char **argv)
     printf("H: %d, S: %d, B: %d\n\n", popular_color.h * 16, popular_color.s * 10,
     popular_color.b * 10);
 
+    pi = DestroyPixelIterator(pi);
     mw = DestroyMagickWand(mw);
     MagickWandTerminus();
 
