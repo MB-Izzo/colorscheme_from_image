@@ -9,3 +9,7 @@ This is a small project I am doing to learn C.
 ```
 gcc main.c color.c `pkg-config --cflags --libs MagickWand
 ```
+
+## Current state
+
+It prints out the most popular color from "logored" image in HSB format.
